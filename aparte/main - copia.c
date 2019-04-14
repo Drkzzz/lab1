@@ -14,6 +14,8 @@ typedef tNodo *Lista;
 
 /*Variables Globales*/
 int ciudad1, ciudad2, ciudad3;
+float coorx,coory;
+
 Lista ListaDatos = NULL;
 Lista ListaSolucion = NULL;
 /*Variables Globales*/
@@ -60,7 +62,7 @@ int LargoLista(Lista L)
 /*Funcion para saber el largo de la lista*/
 
 
-Lista Lista_InsertaFinal(Lista L, int indice, float x, float y)
+Lista Lista_INSERTA_FINAL(Lista L, int indice, float x, float y)
 {
     Lista pNodo, aux;
 
@@ -80,7 +82,7 @@ Lista Lista_InsertaFinal(Lista L, int indice, float x, float y)
     return L;
 }
 
-Lista Lista_Elimina(Lista L, int p)
+Lista Lista_ELIMINA(Lista L, int p)
 {
     int cont = 1;
     Lista aux, aux2;
@@ -107,7 +109,7 @@ Lista Lista_Elimina(Lista L, int p)
     return L;
 }
 
-Lista InsertarPosicion(Lista L, int id, float x, float y, int p)
+Lista InsertarPosicion(Lista L, int id, float x ,float y, int p)
 {
     Lista pNodo, aux;
     int i, largo;
@@ -116,29 +118,33 @@ Lista InsertarPosicion(Lista L, int id, float x, float y, int p)
     pNodo = CreaNodo(id,x,y);
     if (p <= largo+1)
     {
-        if (p == largo+1)
-        {
-            L = Lista_InsertaFinal(L, id, x, y);
+        if (p == 1){
+            //nada
         }
         else
         {
-            aux = L;
-            i = 1;
-            while (i < p-1)
+            if (p == largo+1)
+                L = Lista_INSERTA_FINAL(L, id, x, y);
+            else
             {
-                aux = aux->sig;
-                i = i+1;
+                aux = L;
+                i = 1;
+                while (i < p-1)
+                {
+                    aux = aux->sig;
+                    i = i+1;
+                }
+                pNodo->sig = aux->sig;
+                aux->sig = pNodo;
+                aux = NULL;
             }
-            pNodo->sig = aux->sig;
-            aux->sig = pNodo;
-            aux = NULL;
         }
     }
     pNodo = NULL;
     return L;
 }
 
-int Lista_PosicionElemento(Lista L, int x)
+int Lista_POSICION_ELEMENTO(Lista L, int x)
 {
     Lista aux;
     int pos=0;
@@ -148,13 +154,18 @@ int Lista_PosicionElemento(Lista L, int x)
     {
         pos++;
         if (aux->n_nodo == x)
+        {
+            coorx=aux->x;
+            coory=aux->y;
             return pos;
+        }
+
         aux = aux->sig;
     }
     return 0;
 }
 
-void Lista_Imprime(Lista L)
+void Lista_IMPRIME(Lista L)
 {
     Lista aux;
 
@@ -168,49 +179,44 @@ void Lista_Imprime(Lista L)
     printf("NULL");
 }
 
-Lista OrdenaLista(Lista C_1, Lista C_2, Lista C_3)
-{
-    Lista L, aux, ListaSolucion;
-    aux = C_1;
-    aux->sig=C_2;
-    aux->sig->sig=C_3;
-    ListaSolucion=C_1;
-    printf("\nLista solucion: \n");
-    Lista_Imprime(ListaSolucion);
+float DistanciaEuclidiana(float x1,float y1,float x2,float y2){
+    float restax=x2-x1;
+    float restay=y2-y1;
+    float suma=pow(restax,2)+pow(restay,2);
+    float distancia = sqrt(suma);
+    return distancia;
 }
 
-float DistanciaAcumulada(Lista L)
-{
+float DistanciaAcumulada(void){
+    float distanciaAcum,distancia;
+    float cx1,cx2,cy1,cy2;
     Lista aux;
-    float dist_acum, dist, x1, y1, x2, y2;
-    aux = L;
-    while(aux->sig != NULL)
-    {
-        x1 = aux->x;
-        y1 = aux->y;
-        x2 = aux->sig->x;
-        y2 = aux->sig->y;
-        dist = sqrt(pow(x2 - x1,2) + pow(y2 - y1,2));
-        dist_acum = dist_acum + dist;
-        aux = aux->sig;
+    aux = ListaSolucion;
+    while(aux->sig != NULL){
+        cx1 = aux->x;
+        cy1 = aux->y;
+        cx2 = aux->sig->x;
+        cy2 = aux->sig->y;
+        distanciaAcum=DistanciaEuclidiana(cx1,cy1,cx2,cy2);
+        aux=aux->sig;
     }
-    x1 = aux->x;
-    y1 = aux->y;
-    x2 = L->x;
-    y2 = L->y;
-    dist = sqrt(pow(x2 - x1,2) + pow(y2 - y1,2));
-    dist_acum = dist_acum + dist;
+    cx1 = aux->x;
+    cy1 = aux->y;
+    cx2 = ListaDatos->x;
+    cy2 = ListaDatos->y;
+    distancia = DistanciaEuclidiana(cx1,cy1,cx2,cy2);
+    distanciaAcum = distanciaAcum + distancia;
 
-    return dist_acum;
+    return distanciaAcum;
 }
 
-void Lectura_archivo ()
+
+void Lectura_archivo (void)
 {
     FILE *archivo;
-    int i=0, n_ciudades, indice;
+    int i=1, n_ciudades, indice;
     float coor_x, coor_y;
     char n_archivo[20];
-    Lista C1= NULL, C2=NULL, C3=NULL;
 
     do
     {
@@ -228,55 +234,53 @@ void Lectura_archivo ()
             printf("\nCiudades de inicio: %d, %d, %d", ciudad1, ciudad2, ciudad3);
             printf("\n");
 
-            for(i=0;i<n_ciudades;i++)
-            {
-                fscanf(archivo, "%d", &indice);
-                fscanf(archivo, "%f", &coor_x);
-                fscanf(archivo, "%f", &coor_y);
-                if(indice==ciudad1)
-                    C1 = CreaNodo(indice, coor_x, coor_y);
-                else if(indice==ciudad2)
-                    C2 =CreaNodo(indice, coor_x, coor_y);
-                else if(indice==ciudad3)
-                    C3 = CreaNodo(indice, coor_x, coor_y);
-                if((indice!=ciudad1)&&(indice!=ciudad2)&&(indice!=ciudad3))
-                    ListaDatos = Lista_InsertaFinal(ListaDatos, indice, coor_x, coor_y);
-            }
+            /*Insertamos todos los datos a una lista*/
+            fscanf(archivo, "%d", &indice);
+            fscanf(archivo, "%f", &coor_x);
+            fscanf(archivo, "%f", &coor_y);
+            CreaNodo(indice, coor_x, coor_y);
+            ListaDatos = CreaNodo(indice, coor_x, coor_y);
 
-            fclose(archivo);
-            printf("\nLista datos:");
-            Lista_Imprime(ListaDatos);
-            printf("\n\nCiudad 1:");
-            Lista_Imprime(C1);
-            printf("\n\nCiudad 2:");
-            Lista_Imprime(C2);
-            printf("\n\nCiudad 3:");
-            Lista_Imprime(C3);
+                for(i=0;i<n_ciudades-1;i++)
+                {
+                    fscanf(archivo, "%d", &indice);
+                    fscanf(archivo, "%f", &coor_x);
+                    fscanf(archivo, "%f", &coor_y);
+                    Lista_INSERTA_FINAL(ListaDatos,indice,coor_x,coor_y);
+                }
+                printf("\nLista datos:");
+                Lista_IMPRIME(ListaDatos);
+                fclose(archivo);
 
-            ListaSolucion=CreaNodo(C1->n_nodo,C1->x,C1->y);
-            ListaSolucion=Lista_InsertaFinal(ListaSolucion,C2->n_nodo,C2->x,C2->y);
-            ListaSolucion=Lista_InsertaFinal(ListaSolucion,C3->n_nodo,C3->x,C3->y);
-            //OrdenaLista(C1, C2, C3);
+
+                int p1,p2,p3;
+
+                p1=Lista_POSICION_ELEMENTO(ListaDatos,ciudad1);
+                printf("\n\n%d %f %f",p1,coorx,coory);
+                ListaSolucion=CreaNodo(ciudad1,coorx,coory);
+                p2=Lista_POSICION_ELEMENTO(ListaDatos,ciudad2);
+                printf("\n\n%d %f %f",p2,coorx,coory);
+                ListaSolucion=Lista_INSERTA_FINAL(ListaSolucion,ciudad2,coorx,coory);
+                p3=Lista_POSICION_ELEMENTO(ListaDatos,ciudad3);
+                printf("\n\n%d %f %f",p3,coorx,coory);
+                ListaSolucion=Lista_INSERTA_FINAL(ListaSolucion,ciudad3,coorx,coory);
+                printf("\n\n");
+                Lista_IMPRIME(ListaSolucion);
+
         }
         else
+        {
             printf("No se encontr%c el archivo.\n\n", 162);
+        }
     }while(i==0);
 }
 
-void TSP(){
-
-    Lista auxDatos = ListaDatos;
-    Lista auxSolucion = ListaSolucion;
-    printf("\n");
-    Lista_Imprime(ListaSolucion);
-    float distancia=DistanciaAcumulada(ListaSolucion);
-    printf("\n%.2f",distancia);
+void TSP(void){
 
 }
 
 int main()
 {
     Lectura_archivo();
-    TSP();
     return 0;
 }
