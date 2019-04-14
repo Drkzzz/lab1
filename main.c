@@ -172,8 +172,6 @@ Lista OrdenaLista(Lista C_1, Lista C_2, Lista C_3)
 {
     Lista L, aux, ListaSolucion;
     aux = C_1;
-    aux->x=C_1->x;
-    aux->y=C_1->y;
     aux->sig=C_2;
     aux->sig->sig=C_3;
     ListaSolucion=C_1;
