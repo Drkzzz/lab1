@@ -241,7 +241,7 @@ void Lectura_archivo (void)
             CreaNodo(indice, coor_x, coor_y);
             ListaDatos = CreaNodo(indice, coor_x, coor_y);
 
-                for(i=0;i<n_ciudades;i++)
+                for(i=0;i<n_ciudades-1;i++)
                 {
                     fscanf(archivo, "%d", &indice);
                     fscanf(archivo, "%f", &coor_x);
@@ -256,10 +256,13 @@ void Lectura_archivo (void)
                 int p1,p2,p3;
 
                 p1=Lista_POSICION_ELEMENTO(ListaDatos,ciudad1);
+                printf("\n\n%d %f %f",p1,coorx,coory);
                 ListaSolucion=CreaNodo(ciudad1,coorx,coory);
                 p2=Lista_POSICION_ELEMENTO(ListaDatos,ciudad2);
+                printf("\n\n%d %f %f",p2,coorx,coory);
                 ListaSolucion=Lista_INSERTA_FINAL(ListaSolucion,ciudad2,coorx,coory);
                 p3=Lista_POSICION_ELEMENTO(ListaDatos,ciudad3);
+                printf("\n\n%d %f %f",p3,coorx,coory);
                 ListaSolucion=Lista_INSERTA_FINAL(ListaSolucion,ciudad3,coorx,coory);
                 printf("\n\n");
                 Lista_IMPRIME(ListaSolucion);
