@@ -12,10 +12,14 @@ struct Nodo{
 typedef struct Nodo tNodo;
 typedef tNodo *Lista;
 
+/*Variables Globales*/
 int ciudad1, ciudad2, ciudad3;
+
 Lista ListaDatos = NULL;
 Lista ListaSolucion = NULL;
+/*Variables Globales*/
 
+/*Funcion crea nodo*/
 Lista CreaNodo(int indice, float x, float y)
 {
     Lista aux;
@@ -37,7 +41,10 @@ Lista CreaNodo(int indice, float x, float y)
     }
     return aux;
 }
+/*Funcion crea nodo*/
 
+
+/*Funcion para saber el largo de la lista*/
 int LargoLista(Lista L)
 {
     Lista aux;
@@ -51,18 +58,8 @@ int LargoLista(Lista L)
     }
     return cont;
 }
+/*Funcion para saber el largo de la lista*/
 
-Lista Lista_INSERTA_PRINCIPIO(Lista L, int indice, float x, float y)
-{
-    Lista pNodo;
-
-    pNodo = CreaNodo(indice, x, y);
-    pNodo->sig = L;
-    L = pNodo;
-    pNodo = NULL;
-
-    return L;
-}
 
 Lista Lista_INSERTA_FINAL(Lista L, int indice, float x, float y)
 {
@@ -120,8 +117,9 @@ Lista InsertarPosicion(Lista L, int id, float x ,float y, int p)
     pNodo = CreaNodo(id,x,y);
     if (p <= largo+1)
     {
-        if (p == 1)
-            L = Lista_INSERTA_PRINCIPIO(L, id, x, y);
+        if (p == 1){
+            //nada
+        }
         else
         {
             if (p == largo+1)
@@ -160,7 +158,6 @@ int Lista_POSICION_ELEMENTO(Lista L, int x)
     }
     return 0;
 }
-
 
 void Lista_IMPRIME(Lista L)
 {
@@ -238,7 +235,7 @@ void Lectura_archivo (void)
                     /*Se insertan las primeras 3 ciudades a una lista*/
                     if(indice==ciudad1)
                     {
-                        ListaSolucion = Lista_INSERTA_PRINCIPIO(ListaSolucion, indice, coor_x, coor_y);
+                        ListaSolucion = CreaNodo(indice, coor_x, coor_y);
                     }
                     else if (indice == ciudad2|| indice == ciudad3)
                     {
@@ -247,7 +244,7 @@ void Lectura_archivo (void)
                     if(i==0)
                     {
                         if((indice!=ciudad1)&&(indice!=ciudad2)&&(indice!=ciudad3))
-                            ListaDatos = Lista_INSERTA_PRINCIPIO(ListaDatos, indice, coor_x, coor_y);
+                            ListaDatos = CreaNodo(indice, coor_x, coor_y);
                     }
                     else
                     {
