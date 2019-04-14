@@ -14,6 +14,7 @@ typedef tNodo *Lista;
 
 /*Variables Globales*/
 int ciudad1, ciudad2, ciudad3;
+float coorx,coory;
 
 Lista ListaDatos = NULL;
 Lista ListaSolucion = NULL;
@@ -148,12 +149,17 @@ int Lista_POSICION_ELEMENTO(Lista L, int x)
     Lista aux;
     int pos=0;
 
-    aux = ListaSolucion;
+    aux = ListaDatos;
     while (aux != NULL)
     {
         pos++;
         if (aux->n_nodo == x)
+        {
+            coorx=aux->x;
+            coory=aux->y;
             return pos;
+        }
+
         aux = aux->sig;
     }
     return 0;
@@ -227,40 +233,37 @@ void Lectura_archivo (void)
             fscanf(archivo, "%d", &ciudad3);
             printf("\nCiudades de inicio: %d, %d, %d", ciudad1, ciudad2, ciudad3);
             printf("\n");
-                /*Insertamos todos los datos a una lista*/
-                for(i=0;i<n_ciudades;i++){
+
+            /*Insertamos todos los datos a una lista*/
+            fscanf(archivo, "%d", &indice);
+            fscanf(archivo, "%f", &coor_x);
+            fscanf(archivo, "%f", &coor_y);
+            CreaNodo(indice, coor_x, coor_y);
+            ListaDatos = CreaNodo(indice, coor_x, coor_y);
+
+                for(i=0;i<n_ciudades;i++)
+                {
                     fscanf(archivo, "%d", &indice);
                     fscanf(archivo, "%f", &coor_x);
                     fscanf(archivo, "%f", &coor_y);
-                    /*Se insertan las primeras 3 ciudades a una lista*/
-                    if(indice==ciudad1)
-                    {
-                        ListaSolucion = CreaNodo(indice, coor_x, coor_y);
-                    }
-                    else if (indice == ciudad2|| indice == ciudad3)
-                    {
-                        ListaSolucion = Lista_INSERTA_FINAL(ListaSolucion, indice, coor_x, coor_y);
-                    }
-                    if(i==0)
-                    {
-                        if((indice!=ciudad1)&&(indice!=ciudad2)&&(indice!=ciudad3))
-                            ListaDatos = CreaNodo(indice, coor_x, coor_y);
-                    }
-                    else
-                    {
-                        if((indice!=ciudad1)&&(indice!=ciudad2)&&(indice!=ciudad3))
-                            ListaDatos = Lista_INSERTA_FINAL(ListaDatos, indice, coor_x, coor_y);
-                    }
+                    Lista_INSERTA_FINAL(ListaDatos,indice,coor_x,coor_y);
                 }
-                /*Termina el proceso*/
-                if(i==n_ciudades)
-                {
-                    printf("\nLista solucion:\n");
-                    Lista_IMPRIME(ListaSolucion);
-                    printf("\n\nLista Datos:\n");
-                    Lista_IMPRIME(ListaDatos);
-                }
+                printf("\nLista datos:");
+                Lista_IMPRIME(ListaDatos);
                 fclose(archivo);
+
+
+                int p1,p2,p3;
+
+                p1=Lista_POSICION_ELEMENTO(ListaDatos,ciudad1);
+                ListaSolucion=CreaNodo(ciudad1,coorx,coory);
+                p2=Lista_POSICION_ELEMENTO(ListaDatos,ciudad2);
+                ListaSolucion=Lista_INSERTA_FINAL(ListaSolucion,ciudad2,coorx,coory);
+                p3=Lista_POSICION_ELEMENTO(ListaDatos,ciudad3);
+                ListaSolucion=Lista_INSERTA_FINAL(ListaSolucion,ciudad3,coorx,coory);
+                printf("\n\n");
+                Lista_IMPRIME(ListaSolucion);
+
         }
         else
         {
