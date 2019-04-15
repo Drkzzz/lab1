@@ -162,21 +162,10 @@ void Lista_Imprime(Lista L)
     printf("\n\n\tL -> ");
     while(aux != NULL)
     {
-        printf("%d , %.2f, %.2f -> ", aux->n_nodo, aux->x, aux->y);
+        printf("%d -> ", aux->n_nodo);
         aux = aux->sig;
     }
     printf("NULL");
-}
-
-Lista OrdenaLista(Lista C_1, Lista C_2, Lista C_3)
-{
-    Lista L, aux, ListaSolucion;
-    aux = C_1;
-    aux->sig=C_2;
-    aux->sig->sig=C_3;
-    ListaSolucion=C_1;
-    printf("\nLista solucion: \n");
-    Lista_Imprime(ListaSolucion);
 }
 
 float DistanciaAcumulada(Lista L)
@@ -184,6 +173,7 @@ float DistanciaAcumulada(Lista L)
     Lista aux;
     float dist_acum, dist, x1, y1, x2, y2;
     aux = L;
+    dist_acum=0;
     while(aux->sig != NULL)
     {
         x1 = aux->x;
@@ -244,19 +234,11 @@ void Lectura_archivo ()
             }
 
             fclose(archivo);
-            printf("\nLista datos:");
-            Lista_Imprime(ListaDatos);
-            printf("\n\nCiudad 1:");
-            Lista_Imprime(C1);
-            printf("\n\nCiudad 2:");
-            Lista_Imprime(C2);
-            printf("\n\nCiudad 3:");
-            Lista_Imprime(C3);
 
             ListaSolucion=CreaNodo(C1->n_nodo,C1->x,C1->y);
             ListaSolucion=Lista_InsertaFinal(ListaSolucion,C2->n_nodo,C2->x,C2->y);
             ListaSolucion=Lista_InsertaFinal(ListaSolucion,C3->n_nodo,C3->x,C3->y);
-            //OrdenaLista(C1, C2, C3);
+
         }
         else
             printf("No se encontr%c el archivo.\n\n", 162);
@@ -265,15 +247,56 @@ void Lectura_archivo ()
 
 void TSP(){
 
-    Lista auxDatos = ListaDatos;
-    Lista auxSolucion = ListaSolucion;
-    printf("\n");
-    Lista_Imprime(ListaSolucion);
-    float distancia=DistanciaAcumulada(ListaSolucion);
-    printf("\n%.2f",distancia);
+Lista auxDatos = ListaDatos;
+Lista auxSolucion = ListaSolucion;
 
+printf("\n\n");
+printf("\n\n");
+
+float disTotal;
+int numciudadRestantes=LargoLista(auxDatos);
+
+    while(numciudadRestantes>0)
+    {
+        int mejorPosicion,i,largoauxSolucion;
+        float menDistancia,distancia;
+
+            menDistancia=0;
+            distancia=0;
+            mejorPosicion=0;
+            largoauxSolucion=0;
+            largoauxSolucion = LargoLista(auxSolucion);
+
+
+        for(i=2;i<=largoauxSolucion+1;i++)
+        {
+            auxSolucion=InsertarPosicion(auxSolucion, auxDatos->n_nodo , auxDatos->x , auxDatos->y,i);
+            distancia=DistanciaAcumulada(auxSolucion);
+            auxSolucion=Lista_Elimina(auxSolucion,i);
+
+            //El mejor caso es que lo agregue en la posicion 2//
+            if(i==2)
+            {
+                mejorPosicion=2;
+                menDistancia=distancia;
+            }
+            //En cualquier otro caso, lo insertará en la posición más conveniente//
+            if (distancia<menDistancia)
+            {
+                mejorPosicion=i;
+                menDistancia=distancia;
+            }
+
+        }
+        auxSolucion=InsertarPosicion(auxSolucion, auxDatos->n_nodo , auxDatos->x , auxDatos->y,mejorPosicion);
+        auxDatos=Lista_Elimina(auxDatos,1);
+        numciudadRestantes=LargoLista(auxDatos);
+    }
+    printf("\nEl ciclo hamiltoniano es: ");
+    Lista_Imprime(auxSolucion);
+    disTotal=DistanciaAcumulada(auxSolucion);
+    printf("\n\nLa Distancia del ciclo total es: %.2f\n",disTotal);
 }
-
 int main()
 {
     Lectura_archivo();
