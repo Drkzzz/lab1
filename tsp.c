@@ -148,10 +148,10 @@ Lista InsertarPosicion(Lista L, int id, double x ,double y, int p)
     pNodo = NULL;
     return L;
 }
-Lista EliminaLista(Lista L, int id) 
+Lista EliminaLista(Lista L, int id)
 {
    Lista aux1, aux2;
-   
+
    if (L->id == id)
    {
       aux1 = L;
@@ -176,10 +176,10 @@ Lista EliminaLista(Lista L, int id)
       free(aux1);
       aux2 = NULL;
    }
-   return L; 
+   return L;
 }
-Lista EliminaListaPosicion(Lista L, int p) 
-{ 
+Lista EliminaListaPosicion(Lista L, int p)
+{
     Lista aux, auxNodo;
     int i;
     aux = L;
@@ -188,14 +188,14 @@ Lista EliminaListaPosicion(Lista L, int p)
     {
         L = L->sig;
         aux->sig = NULL;
-        free(aux);   
+        free(aux);
     }
     else
     {
         i = 1;
         while(i < p-1)
         {
-            aux = aux->sig; 
+            aux = aux->sig;
             i++;
         }
         auxNodo = aux->sig;
@@ -218,11 +218,11 @@ void MostrarLista(Lista L,double dist_acum)
         aux = aux->sig;
        }
        printf("\n****************************************************************************\n\n");
-       
+
        //printf("-> (%d,%.2lf,%.2lf).\n",L->id,L->x,L->y);
 
     }
-    else 
+    else
     {
         printf("-> NULL\n");
     }
@@ -289,9 +289,12 @@ Lista ActualizaLista(Lista L, int p, int id, double x, double y)
     }
     return L;
 }
-void LecturaArchivo(char n_arch[50])
+void LecturaArchivo()
 {
     FILE *arch;
+    char n_arch[50];
+    printf("Ingrese nombre archivo: ");
+    scanf(" %s",n_arch);
     int nodos, id, c1, c2, c3, i;
     double x, y;
     Lista C1= NULL, C2=NULL, C3=NULL;
@@ -431,9 +434,9 @@ void TravelmanSaleProblem()
 }
 
 //Main
-int main(int argc , char* argv[])
+int main(void)
 {
-	LecturaArchivo(argv[1]);
+	LecturaArchivo();
 
     printf("\t<Lista Solucion Inicial>\n\n");
     MostrarLista(Ls,DistanciaAcumulada(Ls));
@@ -443,7 +446,7 @@ int main(int argc , char* argv[])
     Ls = OrdenarLs(Ls);
     MostrarLista(Ls,DistanciaAcumulada(Ls));
     TravelmanSaleProblem();
-    
+
 
     return 0;
 }
